@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package teacher;
+
+
+message Teacher {
+  string id = 1;
+  string nom = 2;
+  string matiere = 3;
+
+}
+
+message GetTeacherRequest {
+  string teacher_id = 1;
+}
+
+message GetTeacherResponse {
+  Teacher teacher = 1;
+}
+
+message SearchTeachersRequest {
+  string query = 1;
+}
+
+message SearchTeachersResponse {
+  repeated Teacher teachers = 1;
+}
+
+service TeacherService {
+  rpc GetTeacher(GetTeacherRequest) returns (GetTeacherResponse);
+  rpc SearchTeachers(SearchTeachersRequest) returns (SearchTeachersResponse);
+
+}

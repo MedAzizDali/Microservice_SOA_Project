@@ -1,97 +1,242 @@
-# Microservice_SOA_Project
+# Microservice Documentation
 
-Documentation des microservices
+This README file provides an overview of the microservices, their data schemas, entry points, and interactions. Each microservice is described below, along with the relevant information.
+
+## Student Microservice
+
+The Student Microservice handles operations related to students.
+
+### Data Schema
+
+#### Student
+- `id` (string): The ID of the student.
+- `nom` (string): The name of the student.
+- `email` (string): The email address of the student.
+- `profCode` (string): The code of the professor associated with the student.
+
+#### Teacher
+- `id` (string): The ID of the teacher.
+- `nom` (string): The name of the teacher.
+- `matiere` (string): The subject taught by the teacher.
+
+### gRPC API
+
+The Student Microservice exposes the following gRPC API:
+
+#### GetStudent
+- Request: `GetStudentRequest`
+  - `student_id` (string): The ID of the student to retrieve.
+- Response: `GetStudentResponse`
+  - `student` (Student): The retrieved student.
+
+#### SearchStudents
+- Request: `SearchStudentsRequest`
+  - `query` (string): The search query to filter students.
+- Response: `SearchStudentsResponse`
+  - `students` (repeated Student): The list of students matching the search query.
+
+#### CreateStudent
+- Request: `CreateStudentRequest`
+  - `student_id` (string): The ID of the student to create.
+  - `nom` (string): The name of the student.
+  - `email` (string): The email address of the student.
+  - `profCode` (string): The code of the professor associated with the student.
+- Response: `CreateStudentResponse`
+  - `student` (Student): The created student.
+
+#### GetTeacherInfo
+- Request: `GetTeacherInfoRequest`
+  - `student_name` (string): The name of the student to retrieve the associated teacher's information.
+- Response: `GetTeacherInfoResponse`
+  - `teacher` (Teacher): The teacher associated with the student.
+
+### Implementation Details
+
+The Student Microservice is implemented in Node.js using the following files:
+
+- `studentMicroservice.js`: Defines the gRPC server for the Student Microservice and handles the database interactions for student-related operations.
+
+### Running the Microservice
+
+To run the Student Microservice, execute the following command:
+
+```
+node studentMicroservice.js
+```
+
+The microservice will be available on port 50051.
+
+## Teacher Microservice
+
+The Teacher Microservice handles operations related to teachers.
+
+### Data Schema
+
+#### Teacher
+- `id` (string): The ID of the teacher.
+- `nom` (string): The name of the teacher.
+- `matiere` (string): The subject taught by the teacher.
+
+### gRPC API
+
+The Teacher Microservice exposes the following gRPC API:
+
+#### GetTeacher
+- Request: `GetTeacherRequest`
+  - `teacher_id` (string): The ID of the teacher to retrieve.
+- Response: `GetTeacherResponse`
+  - `teacher` (Teacher): The retrieved teacher.
+
+#### SearchTeachers
+- Request: `SearchTeachersRequest`
+  - `query` (string): The search query to filter teachers.
+- Response: `SearchTeachersResponse`
+  - `teachers` (repeated Teacher): The list of teachers matching the search query.
+
+### Implementation Details
+
+The Teacher Microservice is implemented in Node.js using the following files:
+
+- `teacherMicroservice.js`: Defines the gRPC server for the Teacher Microservice and handles the database interactions for teacher-related operations.
+
+### Running the Microservice
+
+To run the Teacher Microservice, execute the following command:
+
+```
+node teacherMicroservice.js
+```
+
+The microservice will be available on port 50052.
 
 
-Student Microservice : 
+## Using the API
 
-Schémas de données :
+You can now send GraphQL queries and mutations to the API gateway at `http://localhost:3000/graphql`. Here are some example requests:
 
-Student:
+### Get a student by ID
 
-- id (string) : Identifiant de l'étudiant
-- nom (string) : Nom de l'étudiant
-- email (string) : Adresse e-mail de l'étudiant
-- profCode (string) : Code du professeur associé à l'étudiant
+```graphql
+query {
+  student(id: "1") {
+    id
+    nom
+    email
+    profCode
+  }
+}
+```
 
-Points d'entrée : 
+### Get all students
 
-GetStudent :
+```graphql
+query {
+  students {
+    id
+    nom
+    email
+    profCode
+  }
+}
+```
 
-Requête : GetStudentRequest
-student_id (string) : Identifiant de l'étudiant à récupérer
+### Create a student
 
-Réponse : GetStudentResponse
-student (Student) : Informations de l'étudiant récupéré
+```graphql
+mutation {
+  createStudent(id: "3", nom: "John Doe", email: "john.doe@example.com", profCode: "P1234") {
+    id
+    nom
+    email
+    profCode
+  }
+}
+```
 
-SearchStudents : 
+### Get a teacher by ID
 
-Requête : SearchStudentsRequest
-query (string) : Requête de recherche pour les étudiants
+```graphql
+query {
+  teacher(id: "1") {
+    id
+    nom
+    matiere
+  }
+}
+```
 
-Réponse : SearchStudentsResponse
-students (repeated Student) : Liste des étudiants correspondant à la requête de recherche
+### Get all teachers
 
-CreateStudent : 
+```graphql
+query {
+  teachers {
+    id
+    nom
+    matiere
+  }
+}
+```
 
-Requête : CreateStudentRequest
-student_id (string) : Identifiant de l'étudiant à créer
-nom (string) : Nom de l'étudiant à créer
-email (string) : Adresse e-mail de l'étudiant à créer
-profCode (string) : Code du professeur associé à l'étudiant à créer
+### Get teacher information for a student
 
-Réponse : CreateStudentResponse
-student (Student) : Informations de l'étudiant créé
+```graphql
+query {
+  studentName(nom: "John Doe") {
+    id
+    nom
+    matiere
+  }
+}
+```
 
-GetTeacherInfo : 
+## REST API Endpoints
 
-Requête : GetTeacherInfoRequest
-student_name (string) : Nom de l'étudiant pour récupérer les informations sur l'enseignant associé
+In addition to the GraphQL API, the API gateway provides some REST API endpoints to interact with the microservices directly. Here are some example requests:
 
-Réponse : GetTeacherInfoResponse
-teacher (Teacher) : Informations de l'enseignant associé à l'étudiant 
+### Get all students
 
+```http
+GET /students
+```
 
-Teacher Microservice : 
+### Create a student
 
-Schémas de données :
+```http
+POST /students
 
-	Teacher:
+{
+  "id": "3",
+  "nom": "John Doe",
+  "email": "john.doe@example.com",
+  "profCode": "P1234"
+}
+```
 
-- id (string) : Identifiant de l'enseignant
-- nom (string) : Nom de l'enseignant
-- matiere (string) : Matière enseignée par l'enseignant
+### Get a student by ID
 
-Points d'entrée : 
-
-GetTeacher
-
-Requête : GetTeacherRequest
-teacher_id (string) : Identifiant de l'enseignant à récupérer
-
-Réponse : GetTeacherResponse
-teacher (Teacher) : Informations de l'enseignant récupéré
-
-
-
-SearchTeachers
-
-Requête : SearchTeachersRequest
-query (string) : Requête de recherche pour les enseignants
-
-Réponse : SearchTeachersResponse
-teachers (repeated Teacher) : Liste des enseignants correspondant à la requête de recherche
+```http
+GET /students/id/1
+```
 
 
-Interactions avec les autres microservices : 
 
-Le microservice Student interagit avec le microservice Teacher pour récupérer les informations sur l'enseignant associé à un étudiant. L'interaction se fait via l'appel à la méthode GetTeacherInfo du microservice Teacher .
+## Communication between Microservices
 
-API Gateway : 
+The Student Microservice and the Teacher Microservice communicate with each other using gRPC. They interact through the following methods:
 
-Schémas de données:
+- **GetTeacherInfo**: The Student Microservice calls this method to retrieve the teacher associated with a specific student. The request includes the name of the student, and the response contains the teacher information.
 
-Les schémas de données utilisés par l'API Gateway correspondent aux schémas de données des microservices Student et Teacher.
+
+
+
+
+## Additional Notes
+
+- Both microservices use Node.js and gRPC for their implementation and communication.
+- The microservices should be run on separate ports to enable communication without conflicts.
+- The microservices connect to their respective databases for data storage and retrieval.
+-
+
 
 
 
